@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+NAME=vgithub-api-dgraph-zero
+IMAGE=dgraph/dgraph:latest
+
+echo ${NAME}
+server_stop() {
+  echo "-----Stoping server-----"
+  docker stop $NAME
+}
+
+server_start() {
+  echo "-----Starting server-----"
+  docker start $NAME 2>/dev/null || server_create
+}
+
+server_destory() {
+  echo "-----Destroying server-----"
+  docker rm $NAME || (server_stop && docker rm $NAME) 
+}
+
+server_create() {
+  echo "-----Creating server-----"
+  docker run -it \
+    -p 5080:5080 \
+    -p 6080:6080 \
+    -p 8080:8080 \
+    -p 9080:9080 \
+    -p 8000:8000 \
+    -v $(PWD)/tmp/data:/dgraph \
+    -d \
+    --name $NAME \
+    dgraph/dgraph dgraph zero
+}
+
+server_server() {
+  echo "-----Dgraph Server start-----"
+  docker exec -it \
+    -d \
+    $NAME dgraph server \
+    --lru_mb 2048 \
+    --zero localhost:5080
+}
+
+server_ratel() {
+  echo "-----Dgraph Ratel start-----"
+  docker exec -id $NAME dgraph-ratel
+}
+
+COMMAND="${1:-}"
+shift || true
+
+case "$COMMAND" in
+  start)    server_start ;;
+  stop)     server_stop ;;
+  destroy)  server_destory ;;
+  create)   server_create ;;
+  server)   server_server ;;
+  ratel)    server_ratel ;; 
+esac
