@@ -22,7 +22,7 @@ type clientImp struct {
 // NewClient is create client for github v4
 func NewClient(httpClient *http.Client, graphqlURL *url.URL, token string) (Client, error) {
 	if token == "" {
-		return nil, errors.New("You neeed github token")
+		return nil, errors.New("Need github token")
 	}
 
 	return &clientImp{
