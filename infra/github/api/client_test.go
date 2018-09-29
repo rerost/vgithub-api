@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -56,7 +57,7 @@ func TestRequest(t *testing.T) {
 
 	inOutPairs := []struct {
 		test  string
-		query string // DummyResponse (== Query)
+		query api.Query // DummyResponse (== Query)
 	}{
 		{
 			test: "Empty query",
@@ -80,7 +81,11 @@ func TestRequest(t *testing.T) {
 				return
 			}
 			body, _ := ioutil.ReadAll(res.Body)
-			if string(body) != p.query {
+
+			var query api.Query
+			json.Unmarshal(body, &query)
+
+			if api.Query(string(query)) != p.query {
 				t.Errorf("\nWant: %s\nHave: %s\n", p.query, string(body))
 			}
 		})
