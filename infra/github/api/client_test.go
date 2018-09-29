@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"sync"
 	"testing"
 
 	"github.com/rerost/vgithub-api/infra/github/api"
@@ -63,11 +62,8 @@ func TestRequest(t *testing.T) {
 			test: "Empty query",
 		},
 	}
-	var wg sync.WaitGroup
 	for _, p := range inOutPairs {
-		wg.Add(1)
 		t.Run(p.test, func(t *testing.T) {
-			defer wg.Done()
 			dummyServer := newDummyServer(func(w http.ResponseWriter, r *http.Request) {
 				defer r.Body.Close()
 				b, _ := ioutil.ReadAll(r.Body)
@@ -90,5 +86,4 @@ func TestRequest(t *testing.T) {
 			}
 		})
 	}
-	wg.Wait()
 }
