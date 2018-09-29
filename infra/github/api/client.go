@@ -19,10 +19,12 @@ type Query string
 
 const queryFmt = `{"query": "query %s"}`
 
+// MarshalJSON is marshaling and create GraphQL query
 func (query *Query) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(queryFmt, query)), nil
+	return []byte(fmt.Sprintf(queryFmt, string(*query))), nil
 }
 
+// UnmarshalJSON is unmarshaling and pick query
 func (query *Query) UnmarshalJSON(b []byte) error {
 	var q string
 	fmt.Scanf(string(*query), queryFmt, &q)
