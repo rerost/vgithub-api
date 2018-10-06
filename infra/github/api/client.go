@@ -2,11 +2,11 @@ package api
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // Client is client for github v4. See https://developer.github.com/v4/
@@ -18,19 +18,6 @@ type Client interface {
 type Query string
 
 const queryFmt = `{"query": "query %s"}`
-
-// MarshalJSON is marshaling and create GraphQL query
-func (query *Query) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(queryFmt, string(*query))), nil
-}
-
-// UnmarshalJSON is unmarshaling and pick query
-func (query *Query) UnmarshalJSON(b []byte) error {
-	var q string
-	fmt.Scanf(string(*query), queryFmt, &q)
-	*query = Query(q)
-	return nil
-}
 
 type clientImp struct {
 	httpClient *http.Client
@@ -52,11 +39,8 @@ func NewClient(httpClient *http.Client, graphqlURL *url.URL, token string) (Clie
 }
 
 func (api *clientImp) Request(query Query) (*http.Response, error) {
-	requestBody, err := json.Marshal(query)
-	if err != nil {
-		return nil, fmt.Errorf("Query Marshaling error: %s", err)
-	}
-	request, err := http.NewRequest(http.MethodGet, api.graphqlURL.String(), bytes.NewBuffer(requestBody))
+	wrappedRequestBody := []byte(fmt.Sprintf(queryFmt, toJSONString(string(query))))
+	request, err := http.NewRequest(http.MethodPost, api.graphqlURL.String(), bytes.NewBuffer(wrappedRequestBody))
 	if err != nil {
 		return nil, err
 	}
@@ -65,4 +49,11 @@ func (api *clientImp) Request(query Query) (*http.Response, error) {
 	request.Header.Add("Authorization", fmt.Sprintf("bearer %s", api.token))
 
 	return api.httpClient.Do(request)
+}
+
+func toJSONString(s string) string {
+	tmp := strings.Replace(s, "\n", "", -1)
+	tmp = strings.Replace(tmp, "\t", "", -1)
+	tmp = strings.Replace(tmp, "\"", "\\\"", -1)
+	return tmp
 }
