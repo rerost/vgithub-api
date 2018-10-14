@@ -11,3 +11,7 @@ required = [
 [[constraint]]
   name ="gopkg.in/guregu/null.v3"
   version = "3.4.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/dgraph-io/dgo"

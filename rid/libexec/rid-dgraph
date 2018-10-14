@@ -34,20 +34,9 @@ server_create() {
     -d \
     --name $NAME \
     dgraph/dgraph dgraph zero
-}
 
-server_server() {
-  echo "-----Dgraph Server start-----"
-  docker exec -it \
-    -d \
-    $NAME dgraph server \
-    --lru_mb 2048 \
-    --zero localhost:5080
-}
-
-server_ratel() {
-  echo "-----Dgraph Ratel start-----"
-  docker exec -id $NAME dgraph-ratel
+  docker exec -it -d $NAME dgraph server --lru_mb 2048 --zero localhost:5080
+  docker exec -it -d $NAME dgraph-ratel
 }
 
 COMMAND="${1:-}"
@@ -58,6 +47,4 @@ case "$COMMAND" in
   stop)     server_stop ;;
   destroy)  server_destory ;;
   create)   server_create ;;
-  server)   server_server ;;
-  ratel)    server_ratel ;; 
 esac

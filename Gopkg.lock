@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:89013c5ffa4226005b3b395ef3c7ae44890e5c8852b114f0c0f6f04cd858d6b6"
+  name = "github.com/dgraph-io/dgo"
+  packages = [
+    ".",
+    "protos/api",
+    "y",
+  ]
+  pruneopts = ""
+  revision = "1e7766a7c63a03daf86faf59524df1bfa4ecc4d9"
+
+[[projects]]
   digest = "1:b13707423743d41665fd23f0c36b2f37bb49c30e94adb813319c44188a51ba22"
   name = "github.com/ghodss/yaml"
   packages = ["."]
@@ -191,14 +203,6 @@
   version = "v1.15.0"
 
 [[projects]]
-  digest = "1:1582dd711e6e5ef92d6245a5dd0646da19d0d0acb94ea615d43896b7b6c6620b"
-  name = "gopkg.in/guregu/null.v3"
-  packages = ["."]
-  pruneopts = ""
-  revision = "80515d440932108546bcade467bb7d6968e812e2"
-  version = "v3.4.0"
-
-[[projects]]
   digest = "1:f0620375dd1f6251d9973b5f2596228cc8042e887cd7f827e4220bc1ce8c30e2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -210,11 +214,11 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/dgraph-io/dgo",
     "github.com/golang/protobuf/protoc-gen-go",
     "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway",
     "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
     "github.com/izumin5210/grapi/pkg/grapiserver",
-    "gopkg.in/guregu/null.v3",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
